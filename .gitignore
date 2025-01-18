@@ -1,0 +1,8 @@
+# Bỏ qua thư mục node_modules
+node_modules/
+
+# Bỏ qua tệp .env (chứa các thông tin nhạy cảm)
+.env
+
+# Bỏ qua các tệp hệ thống (chỉ áp dụng với macOS)
+.DS_Store
