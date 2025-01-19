@@ -25,10 +25,13 @@ class Pagination {
         return this.totalItems;
     }
     getTotalPages() {
-        return Math.ceil(this.totalItems / this.pageSize);
+        return this.totalPages;
     }
     setTotalItems(totalItems) {
         this.totalItems = totalItems;
+    }
+    setTotalPages(totalPages) {
+        this.totalPages = totalPages;
     }
     getItems() {
         return this.items;

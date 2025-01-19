@@ -5,6 +5,7 @@ const connectDB = require("./config/database");
 const errorHandler = require("./middleware/errorHandler");
 const appUserRouter = require("./routes/appUserRouter");
 const apiHorsecopedRouter = require("./routes/apiHorsecoped");
+const paramsApiRouter = require("./routes/paramsApiRouter");
 // Load env vars
 dotenv.config();
 // Connect to database
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use("/api/v1/users", appUserRouter);
 app.use("/api/v1/api-horsecoped", apiHorsecopedRouter);
+app.use("/api/v1/params-api", paramsApiRouter);
 // Error handler
 app.use(errorHandler);
 const PORT = process.env.PORT || 3000;

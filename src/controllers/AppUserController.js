@@ -107,12 +107,13 @@ const login = asyncHandler(async (req, res) => {
             await AppUser.findByIdAndUpdate(user._id, { countFailedLogin: 0 });
 
             const role = await AppUserRole.findOne({ userId: user._id });
+            const roleCode = await AppRole.findOne({ _id: role.roleId });
             const dataRes = {
                 _id: user.id,
                 username: user.username,
                 email: user.email,
                 phone: user.phone,
-                role: role.roleId,
+                role: roleCode.roleCode,
             };
             dataRes.token = generateToken(dataRes);
             return res

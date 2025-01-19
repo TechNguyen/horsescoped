@@ -1,19 +1,23 @@
 const mongoose = require("mongoose");
-const ApiHorsecoped = new mongoose.Schema(
+const ParamsApi = mongoose.Schema(
     {
+        apiId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "ApiHorsecoped",
+            required: true,
+        },
         name: {
             type: String,
             required: true,
         },
-        method: {
+        Validate: {
             type: String,
             required: true,
         },
-        url: {
+        Desc: {
             type: String,
-            required: true,
         },
-        description: {
+        Value: {
             type: String,
         },
         isActive: {
@@ -26,4 +30,4 @@ const ApiHorsecoped = new mongoose.Schema(
     },
 );
 
-module.exports = mongoose.model("ApiHorsecoped", ApiHorsecoped);
+module.exports = mongoose.model("ParamsApi", ParamsApi);

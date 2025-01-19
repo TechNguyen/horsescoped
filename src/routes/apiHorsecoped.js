@@ -6,12 +6,13 @@ const {
     createApiHorsecoped,
     updateApiHorsecoped,
     deleteApiHorsecoped,
+    requestApiToCrawel,
 } = require("../controllers/ApiHorsecopedController");
 
 router.get("/page-list", getPageListApiHorsecoped);
-router.get("/:id", getOneApiHorsecoped);
-router.post("/", createApiHorsecoped);
-router.put("/:id", updateApiHorsecoped);
-router.delete("/:id", deleteApiHorsecoped);
-
+router.get("/get-one", getOneApiHorsecoped);
+router.post("/create", createApiHorsecoped);
+router.put("/update", updateApiHorsecoped);
+router.delete("/delete", deleteApiHorsecoped);
+router.post("/request-api-to-crawel", requestApiToCrawel);
 module.exports = router;

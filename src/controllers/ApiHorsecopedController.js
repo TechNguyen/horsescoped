@@ -1,4 +1,6 @@
 const ApiHorsecoped = require("../models/ApiHorsecoped");
+const getDataLaSo = require("../models/getDataLaSo");
+const ApiResponse = require("../utils/apiResponse");
 const {
     getPageList,
     getOne,
@@ -8,6 +10,7 @@ const {
     deleteOne,
 } = require("../core/controllers/baseController");
 const asyncHandler = require("express-async-handler");
+const { default: axios } = require("axios");
 
 const getPageListApiHorsecoped = asyncHandler(async (req, res) => {
     try {
@@ -56,7 +59,11 @@ const createApiHorsecoped = asyncHandler(async (req, res) => {
 
 const updateApiHorsecoped = asyncHandler(async (req, res) => {
     try {
-        const apiHorsecoped = await updateOne(ApiHorsecoped, req.body);
+        const apiHorsecoped = await updateOne(
+            ApiHorsecoped,
+            req.body.id,
+            req.body,
+        );
         if (apiHorsecoped.getStatus()) {
             return apiHorsecoped.createResSuccess(res);
         } else {
@@ -71,11 +78,55 @@ const updateApiHorsecoped = asyncHandler(async (req, res) => {
 
 const deleteApiHorsecoped = asyncHandler(async (req, res) => {
     try {
-        const apiHorsecoped = await deleteOne(ApiHorsecoped, req.body);
+        const apiHorsecoped = await deleteOne(ApiHorsecoped, req.body.id);
         if (apiHorsecoped.getStatus()) {
             return apiHorsecoped.createResSuccess(res);
         } else {
             return apiHorsecoped.createResError(res);
+        }
+    } catch (err) {
+        return res
+            .status(500)
+            .json(new ApiResponse(500, "Internal server error", err, false));
+    }
+});
+
+const requestApiToCrawel = asyncHandler(async (req, res) => {
+    try {
+        const { url } = req.body;
+        const api = await ApiHorsecoped.findOne({
+            url: url,
+        });
+        if (api) {
+            if (api.method.toUpperCase() === "GET") {
+                const data = await axios.get(url, req.body);
+                const dataLaSo = await createOne(getDataLaSo, {
+                    url: api.url,
+                    method: api.method,
+                    ipRequest: req.ip,
+                    requestBody: JSON.stringify(req.body),
+                    data: JSON.stringify(data.data),
+                });
+                return res
+                    .status(200)
+                    .json(new ApiResponse(200, "Success", dataLaSo, true));
+            } else if (api.method.toUpperCase() === "POST") {
+                const data = await axios.post(url, req.body);
+                const dataLaSo = await createOne(getDataLaSo, {
+                    url: api.url,
+                    method: api.method,
+                    ipRequest: req.ip,
+                    requestBody: JSON.stringify(req.body),
+                    data: JSON.stringify(data.data),
+                });
+                return res
+                    .status(200)
+                    .json(new ApiResponse(200, "Success", dataLaSo, true));
+            }
+        } else {
+            return res
+                .status(404)
+                .json(new ApiResponse(404, "Api not found", null, false));
         }
     } catch (err) {
         return res
@@ -90,4 +141,5 @@ module.exports = {
     createApiHorsecoped,
     updateApiHorsecoped,
     deleteApiHorsecoped,
+    requestApiToCrawel,
 };
