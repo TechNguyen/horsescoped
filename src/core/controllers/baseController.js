@@ -57,9 +57,10 @@ const updateOne = async (Model, id, data) => {
     }
 };
 
-const getPageList = async (Model, queryString) => {
+const getPageList = async (Model, queryString,searchFields = []) => {
     try {
         const { pageIndex, pageSize, search } = queryString;
+        console.log(queryString);
         const pagination = new Pagination(pageIndex, pageSize);
         // Tạo điều kiện tìm kiếm động dựa trên searchFields
         const querySearch = search
