@@ -206,10 +206,24 @@ const getUserById = asyncHandler(async (req, res) => {
     }
 });
 
+const getTotalUser = asyncHandler(async (req, res) => {
+    try {
+        const totalUser = await AppUser.countDocuments();
+        return res
+            .status(200)
+            .json(new ApiResponse(200, "Total user", totalUser, true));
+    } catch (err) {
+        return res
+            .status(500)
+            .json(new ApiResponse(500, "Internal server error", err, false));
+    }
+});
+
 module.exports = {
     signup,
     login,
     restPassword,
     getPageListUser,
     getUserById,
+    getTotalUser,
 };
