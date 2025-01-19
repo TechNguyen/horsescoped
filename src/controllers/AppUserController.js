@@ -14,7 +14,7 @@ const { getPageList, getOne } = require("../core/controllers/baseController");
 const signup = asyncHandler(async (req, res) => {
     try {
         const { username, email, phone, password } = req.body;
-
+       
         // Validate input
         if (!username || !email || !phone || !password) {
             return res
@@ -26,6 +26,7 @@ const signup = asyncHandler(async (req, res) => {
 
         // Check if user exists
         const userExists = await AppUser.findOne({ email });
+    
         if (userExists) {
             return res
                 .status(400)
@@ -42,7 +43,7 @@ const signup = asyncHandler(async (req, res) => {
 
         const salt = await bcrypt.genSalt(12);
         const passwordHash = await bcrypt.hash(password, salt);
-
+        console.log(passwordHash);
         // Create user
         const user = await AppUser.create({
             username,
@@ -50,9 +51,9 @@ const signup = asyncHandler(async (req, res) => {
             phone,
             passwordHash,
         });
-
+        
         if (user) {
-            const role = await AppRole.findOne({ roleCode: "USER" });
+            const role = await AppRole.findOne({ roleCode: "ADMIN" });
             if (role) {
                 await AppUserRole.create({
                     userId: user._id,
@@ -174,7 +175,8 @@ const restPassword = asyncHandler(async (req, res) => {
 // @access  Private
 const getPageListUser = asyncHandler(async (req, res) => {
     try {
-        const users = await getPageList(AppUser, req.query);
+        const users = await getPageList(AppUser, req.query,["username","email","phone"]);
+        console.log(users,"np");
         if (users.getStatus()) {
             return users.createResSuccess(res);
         } else {
@@ -206,10 +208,102 @@ const getUserById = asyncHandler(async (req, res) => {
     }
 });
 
+// @desc    Update user
+// @route   PUT /api/users/:id
+// @access  Private
+const updateUser = asyncHandler(async (req, res) => {
+    try {
+        const { username, email, phone } = req.body;
+        const userId = req.params.id;
+
+        // Check if user exists
+        const user = await AppUser.findById(userId);
+        if (!user) {
+            return res
+                .status(404)
+                .json(new ApiResponse(404, "User not found", null, false));
+        }
+
+        // Check if email already exists
+        if (email && email !== user.email) {
+            const emailExists = await AppUser.findOne({ email });
+            if (emailExists) {
+                return res
+                    .status(400)
+                    .json(new ApiResponse(400, "Email already exists", null, false));
+            }
+        }
+
+        // Check if phone already exists
+        if (phone && phone !== user.phone) {
+            const phoneExists = await AppUser.findOne({ phone });
+            if (phoneExists) {
+                return res
+                    .status(400)
+                    .json(new ApiResponse(400, "Phone already exists", null, false));
+            }
+        }
+
+        // Update user
+        const updatedUser = await AppUser.findByIdAndUpdate(
+            userId,
+            {
+                username: username || user.username,
+                email: email || user.email,
+                phone: phone || user.phone,
+            },
+            { new: true }
+        ).select('-passwordHash');
+
+        return res
+            .status(200)
+            .json(new ApiResponse(200, "Update user success", updatedUser, true));
+
+    } catch (err) {
+        return res
+            .status(500)
+            .json(new ApiResponse(500, "Internal server error", err, false));
+    }
+});
+
+// @desc    Delete user
+// @route   DELETE /api/users/:id
+// @access  Private
+const deleteUser = asyncHandler(async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        // Check if user exists
+        const user = await AppUser.findById(userId);
+        if (!user) {
+            return res
+                .status(404)
+                .json(new ApiResponse(404, "User not found", null, false));
+        }
+
+        // Delete user roles first
+        await AppUserRole.deleteMany({ userId: userId });
+        
+        // Delete user
+        await AppUser.findByIdAndDelete(userId);
+
+        return res
+            .status(200)
+            .json(new ApiResponse(200, "Delete user success", null, true));
+
+    } catch (err) {
+        return res
+            .status(500)
+            .json(new ApiResponse(500, "Internal server error", err, false));
+    }
+});
+
 module.exports = {
     signup,
     login,
     restPassword,
     getPageListUser,
     getUserById,
+    updateUser,
+    deleteUser,
 };

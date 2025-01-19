@@ -7,6 +7,8 @@ const authorize = (allowedRoles = []) => {
         try {
             // Get token from header
             const token = req.header("Authorization")?.replace("Bearer ", "");
+       
+
             if (!token) {
                 return res
                     .status(401)
@@ -17,12 +19,12 @@ const authorize = (allowedRoles = []) => {
 
             // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
+         
             // Get user with roles
-            const user = await AppUser.findById(decoded.userId).populate(
+            const user = await AppUser.findById(decoded.data._id).populate(
                 "roles",
             );
-
+            console.log(user);
             if (!user) {
                 return res
                     .status(401)
