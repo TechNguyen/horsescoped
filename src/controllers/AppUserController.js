@@ -285,7 +285,7 @@ const updateUser = asyncHandler(async (req, res) => {
     }
 });
 
-// @desc    Delete user
+// @desc    Delete user 
 // @route   DELETE /api/users/:id
 // @access  Private
 const deleteUser = asyncHandler(async (req, res) => {

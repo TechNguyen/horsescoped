@@ -8,6 +8,7 @@ const apiHorsecopedRouter = require("./routes/apiHorsecoped");
 const paramsApiRouter = require("./routes/paramsApiRouter");
 const getDataLaSoRouter = require("./routes/getDataLaSoRouter");
 const dashboarRouter = require("./routes/dashboarRouter");
+const blogRouter = require("./routes/blogRouter");
 // Load env vars
 dotenv.config();
 // Connect to database
@@ -24,6 +25,7 @@ app.use("/api/v1/api-horsecoped", apiHorsecopedRouter);
 app.use("/api/v1/params-api", paramsApiRouter);
 app.use("/api/v1/data-la-so", getDataLaSoRouter);
 app.use("/api/v1/dashboard", dashboarRouter);
+app.use("/api/v1/blog", blogRouter);
 // Error handler
 app.use(errorHandler);
 const PORT = process.env.PORT || 3000;
