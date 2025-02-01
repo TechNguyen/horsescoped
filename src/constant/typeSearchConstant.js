@@ -3,4 +3,6 @@ const typeSearchg = Object.freeze({
     AMLICH: 2,
 });
 
+
+
 export { typeSearchg };

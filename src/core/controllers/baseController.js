@@ -57,7 +57,7 @@ const updateOne = async (Model, id, data) => {
     }
 };
 
-const getPageList = async (Model, queryString,searchFields = []) => {
+const getPageList = async (Model, queryString, searchFields = []) => {
     try {
         const { pageIndex, pageSize, search } = queryString;
         console.log(queryString);

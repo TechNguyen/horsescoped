@@ -111,19 +111,6 @@ const requestApiToCrawel = asyncHandler(async (req, res) => {
                     .status(200)
                     .json(new ApiResponse(200, "Success", dataLaSo, true));
             } else if (api.method.toUpperCase() === "POST") {
-                const lunarDate = {
-                    year: req.body.year,
-                    month: req.body.month,
-                    day: req.body.day,
-                };
-
-                const solarDate = moment(lunarDate, "YYYY-MM-DD")
-                    .lunar()
-                    .lunarYear(lunarDate.year)
-                    .lunarMonth(lunarDate.month)
-                    .lunarDate(lunarDate.day)
-                    .toDate();
-
                 const data = await axios.post(url, req.body);
                 const dataLaSo = await createOne(getDataLaSo, {
                     url: api.url,

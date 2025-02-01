@@ -10,10 +10,16 @@ const Blog = new mongoose.Schema({
     description: {
         type: String,
     },
+    meta: {
+        type: String,
+    },
     keyword: {
         type: String,
     },
     content: {
+        type: String,
+    },
+    status: {
         type: String,
     },
     createAt: {
@@ -31,6 +37,10 @@ const Blog = new mongoose.Schema({
     isDelete: {
         type: Boolean,
         default: false,
+    },
+    ThumnailsId: {
+        type: mongoose.Schema.ObjectId,
+        ref: "TaiLieuDinhKem",
     },
 });
 module.exports = mongoose.model("Blog", Blog);
