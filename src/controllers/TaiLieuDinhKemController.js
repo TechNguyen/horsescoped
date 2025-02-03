@@ -9,13 +9,8 @@ const { log } = require("console");
 
 const UploadFile = asyncHandler(async (req, res) => {
     try {
-        console.log(req);
-
         // Xem xét các cookie trong yêu cầu
         const attachment = req.file;
-
-        console.log(req.file);
-
         const { mimetype, filename, size, originalname } = attachment;
         const attachmentDk = {
             FileExtension: originalname.substring(
@@ -36,6 +31,7 @@ const UploadFile = asyncHandler(async (req, res) => {
                 fileName: filename,
                 width: 300,
                 height: 200,
+                id: resApi.data._id,
                 url: `${process.env.PROTOCOL}://${process.env.HOST}:${process.env.PORT}/uploads/blogs/${attachmentDk.FileName}`,
             });
         } else {

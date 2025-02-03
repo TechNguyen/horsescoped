@@ -22,7 +22,7 @@ const app = express();
 // Middleware
 app.use(
     cors({
-        origin: "*", // Chỉ cho phép từ localhost:3000
+        origin: `${process.env.PROTOCOL}://${process.env.HOST}:${process.env.PORT_CLIENT}`, // Chỉ cho phép từ localhost:3000
         methods: ["GET", "POST", "PUT", "DELETE"],
         credentials: true, // Cho phép gửi cookie hoặc token nếu cần
     }),
