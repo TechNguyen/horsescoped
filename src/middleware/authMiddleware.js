@@ -74,7 +74,7 @@ const authorize = (allowedRoles = []) => {
                                 false,
                             ),
                         );
-                }
+           s     }
 
                 req.user = user;
             }
