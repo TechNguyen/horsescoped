@@ -11,6 +11,7 @@ const {
 } = require("../core/controllers/baseController");
 const asyncHandler = require("express-async-handler");
 const { default: axios } = require("axios");
+const DetailCrawerl = require("../models/DetailCrawerl");
 
 const getPageListApiHorsecoped = asyncHandler(async (req, res) => {
     try {
@@ -100,28 +101,43 @@ const requestApiToCrawel = asyncHandler(async (req, res) => {
         if (api) {
             if (api.method.toUpperCase() === "GET") {
                 const data = await axios.get(url, req.body);
-                const dataLaSo = await createOne(getDataLaSo, {
-                    url: api.url,
-                    method: api.method,
-                    ipRequest: req.ip,
-                    requestBody: JSON.stringify(req.body),
-                    data: JSON.stringify(data.data),
-                });
-                return res
-                    .status(200)
-                    .json(new ApiResponse(200, "Success", dataLaSo, true));
+                if (data.data.msg?.status) {
+                    const resultCreate = await createOne(
+                        DetailCrawerl,
+                        data.data.data,
+                    );
+                    if (resultCreate.getStatus()) {
+                        return resultCreate.createResSuccess(res);
+                    } else {
+                        return resultCreate.createResError(res);
+                    }
+                } else {
+                    return res
+                        .status(404)
+                        .json(
+                            new ApiResponse(404, "Api not found", null, false),
+                        );
+                }
             } else if (api.method.toUpperCase() === "POST") {
                 const data = await axios.post(url, req.body);
-                const dataLaSo = await createOne(getDataLaSo, {
-                    url: api.url,
-                    method: api.method,
-                    ipRequest: req.ip,
-                    requestBody: JSON.stringify(req.body),
-                    data: JSON.stringify(data.data),
-                });
-                return res
-                    .status(200)
-                    .json(new ApiResponse(200, "Success", dataLaSo, true));
+
+                if (data.data.msg?.status) {
+                    const resultCreate = await createOne(
+                        DetailCrawerl,
+                        data.data.data,
+                    );
+                    if (resultCreate.getStatus()) {
+                        return resultCreate.createResSuccess(res);
+                    } else {
+                        return resultCreate.createResError(res);
+                    }
+                } else {
+                    return res
+                        .status(404)
+                        .json(
+                            new ApiResponse(404, "Api not found", null, false),
+                        );
+                }
             }
         } else {
             return res

@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { authorize } = require("../middleware/authMiddleware");
-const { GetPageListDataLaSo } = require("../controllers/getDataLaSoController");
+const { GetPageList } = require("../controllers/DetailCrawler");
 
 // Public routes
-router.get("/page-list", GetPageListDataLaSo);
+router.get("/page-list", GetPageList);
 module.exports = router;
